@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mini Exchange</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #0f172a;
+            color: white;
+            text-align: center;
+            padding: 50px;
+        }
+
+        .card {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 15px;
+            width: 350px;
+            margin: auto;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #38bdf8;
+        }
+
+        .price {
+            font-size: 28px;
+            margin: 20px 0;
+            color: #22c55e;
+        }
+
+        input {
+            padding: 10px;
+            margin: 10px;
+            width: 80%;
+            border-radius: 8px;
+            border: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .buy {
+            background: #22c55e;
+            color: white;
+        }
+
+        .sell {
+            background: #ef4444;
+            color: white;
+        }
+
+        .wallet {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+
+<h1>DOGE Exchange 🚀</h1>
+
+<div class="price">
+    Price: <span id="price">...</span> IRT
+</div>
+
+<div class="wallet">
+    <p>💰 IRT: <span id="usdt"></span></p>
+    <p>🐶 DOGE: <span id="doge"></span></p>
+</div>
+
+<input type="number" id="amount" placeholder="IRT amount">
+<br>
+<button class="buy" onclick="buy()">Buy DOGE</button>
+
+<br><br>
+
+<input type="number" id="doge_amount" placeholder="DOGE amount">
+<br>
+<button class="sell" onclick="sell()">Sell DOGE</button>
+
+</div>
+
+<script>
+async function loadPrice() {
+    let res = await fetch('/api/price/');
+    let data = await res.json();
+    document.getElementById('price').innerText = data.price;
+}
+
+async function loadWallet() {
+    let res = await fetch('/api/wallet/');
+    let data = await res.json();
+
+    document.getElementById('usdt').innerText = data.usdt;
+    document.getElementById('doge').innerText = data.doge;
+}
+
+async function buy() {
+    let amount = document.getElementById('amount').value;
+    await fetch(`/api/buy/?amount=${amount}`);
+    loadWallet();
+}
+
+async function sell() {
+    let amount = document.getElementById('doge_amount').value;
+    await fetch(`/api/sell/?amount=${amount}`);
+    loadWallet();
+}
+
+setInterval(loadPrice, 3000);
+loadPrice();
+loadWallet();
+</script>
+
+</body>
+</html>
